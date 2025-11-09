@@ -1,7 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'standalone',
-  reactCompiler: true,
+  reactCompiler: false, // Desabilitado React Compiler para compatibilidade
   eslint: {
     ignoreDuringBuilds: true,
   },
@@ -11,6 +10,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  poweredByHeader: false,
+  compress: true,
 }
 
 export default nextConfig
