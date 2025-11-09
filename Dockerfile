@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Copy package files
 COPY package.json ./
-RUN npm install --legacy-peer-deps
+RUN npm install --legacy-peer-deps --verbose
 
 # Rebuild the source code only when needed
 FROM base AS builder
@@ -19,8 +19,8 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
 ENV NODE_ENV=production
 
-# Build the application
-RUN npm run build
+RUN echo "Starting Next.js build..." && \
+    npm run build --verbose || (echo "Build failed with exit code $?"; exit 1)
 
 # Production image
 FROM base AS runner
@@ -33,7 +33,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy necessary files
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
